@@ -44,7 +44,7 @@ this.handleShowModalToggle();
       {error && <h2 className={css.error_message}>Something went wrong..</h2>}
       {isLoading && <Loader />}
       {!isHidden && <Button onClick={handleButtonClick}/>}
-      {showModal && <Modal link={largeImg} onKeydown={handleShowModalToggle}/>}
+      {showModal && <Modal largeImgLink={largeImg} onKeydown={handleShowModalToggle}/>}
     </div>
   );}
 };
