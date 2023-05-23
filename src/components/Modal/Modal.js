@@ -4,15 +4,16 @@ import css from '../Styles.module.css';
 
 export const Modal = ({ largeImgLink, onKeydown }) => {
   useEffect(() => {
+    const handleKeydownClick = event => {
+      if (event.code === 'Escape') onKeydown();
+    };
     window.addEventListener('keydown', handleKeydownClick);
-    return window.removeEventListener('keydown', handleKeydownClick);
-  }, []);
+    return () => window.removeEventListener('keydown', handleKeydownClick);
+  }, [onKeydown]);
   // useEffect(() => {
   //   return window.removeEventListener('keydown', handleKeydownClick);
   // }, []);
-  const handleKeydownClick = event => {
-    if (event.code === 'Escape') onKeydown();
-  };
+
   const handleBackdropClick = event => {
     if (event.currentTarget === event.target) onKeydown();
   };
