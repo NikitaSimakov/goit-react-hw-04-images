@@ -25,7 +25,7 @@ export const App = () => {
     setLargeImg(link);
     handleShowModalToggle();
 }
-const handleLoading = () => setIsLoading(!isLoading)
+const handleLoading = () => setIsLoading(prevState=>!prevState)
   const handleGetError = (error) => setError(error)
   const handleButtonHide = (bool) => setIsHidden(bool)
         return (

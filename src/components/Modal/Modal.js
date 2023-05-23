@@ -10,9 +10,6 @@ export const Modal = ({ largeImgLink, onKeydown }) => {
     window.addEventListener('keydown', handleKeydownClick);
     return () => window.removeEventListener('keydown', handleKeydownClick);
   }, [onKeydown]);
-  // useEffect(() => {
-  //   return window.removeEventListener('keydown', handleKeydownClick);
-  // }, []);
 
   const handleBackdropClick = event => {
     if (event.currentTarget === event.target) onKeydown();
