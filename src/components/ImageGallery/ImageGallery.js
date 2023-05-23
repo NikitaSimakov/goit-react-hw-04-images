@@ -1,4 +1,4 @@
-import React, { Component, useEffect } from 'react';
+import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { getSearchImages } from 'api/SearchImageApi';
 import { ImageGalleryItem } from 'components/ImageGalleryItem/ImageGalleryItem';
