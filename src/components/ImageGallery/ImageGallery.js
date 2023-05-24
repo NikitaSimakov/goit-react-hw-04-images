@@ -1,67 +1,109 @@
-import React, { Component } from 'react';
+import React, { useState, useEffect } from 'react';
 import PropTypes from 'prop-types';
 import { getSearchImages } from 'api/SearchImageApi';
 import { ImageGalleryItem } from 'components/ImageGalleryItem/ImageGalleryItem';
 import css from '../Styles.module.css';
 
-export class ImageGallery extends Component {
-  state = {
-    gallery: [],
-    error: '',
-  };
+export const ImageGallery = ({
+  searchQuery,
+  page,
+  isLoading,
+  handleButtonHide,
+  handleGetError,
+  getLargeImg,
+}) => {
+  const [gallery, setGallery] = useState([]);
+  const [error, setError] = useState(false);
 
-  async componentDidUpdate(prevProps) {
-    const { searchQuery, page, isLoading, handleButtonHide, handleGetError } =
-      this.props;
-
+  useEffect(() => {
+    if (searchQuery === '') return;
     try {
-      if (prevProps.searchQuery !== searchQuery) {
-        this.setState({ gallery: [] });
-        handleGetError(false);
-        isLoading();
-        const gallery = await getSearchImages(searchQuery, page);
-        this.setState({ gallery: gallery.hits });
-        handleButtonHide(false);
-        if (gallery.hits.length < 12) {
-          handleButtonHide(true);
-          handleGetError(false);
-        }
-        if (gallery.hits.length >= 12) handleButtonHide(false);
-        isLoading();
-        if (gallery.hits.length === 0) {
-          handleGetError(true);
-          handleButtonHide(true);
-          return;
-        }
-      }
-      if (prevProps.page < page) {
-        isLoading();
-        const gallery = await getSearchImages(searchQuery, page);
-        this.setState(prevState => {
-          return { gallery: [...prevState.gallery, ...gallery?.hits] };
-        });
-
-        isLoading();
-        return;
-      }
+      getSearchImages(searchQuery, page).then(data => {
+        if (page === 1) setGallery(data.hits);
+        if (page > 1) setGallery(prev => [...prev, ...data.hits]);
+      });
     } catch (error) {
-      isLoading();
-      if (error) return handleGetError();
+      setError(true);
+    } finally {
+      console.log(page);
     }
-  }
+  }, [page, searchQuery]);
 
-  render() {
-    const { gallery } = this.state;
-    const { getLargeImg } = this.props;
-    return (
-      <>
-        <ul className={css.ImageGallery}>
-          <ImageGalleryItem gallery={gallery} getLargeImg={getLargeImg} />
-        </ul>
-      </>
-    );
-  }
-}
+  useEffect(() => {
+    if (error) handleGetError(true);
+  }, [handleGetError, error]);
+  useEffect(() => {
+    if (gallery.length === 12) handleButtonHide(false);
+    if (gallery.length < 12) handleButtonHide(true);
+  }, [gallery, handleButtonHide]);
+
+  console.log(gallery);
+  return (
+    <>
+      <ul className={css.ImageGallery}>
+        <ImageGalleryItem gallery={gallery} getLargeImg={getLargeImg} />
+      </ul>
+    </>
+  );
+};
+// export class ImageGallery extends Component {
+//   state = {
+//     gallery: [],
+//     error: '',
+//   };
+
+// async componentDidUpdate(prevProps) {
+//   const { searchQuery, page, isLoading, handleButtonHide, handleGetError } =
+//     this.props;
+
+//   try {
+//     if (prevProps.searchQuery !== searchQuery) {
+//       this.setState({ gallery: [] });
+//       handleGetError(false);
+//       isLoading();
+//       const gallery = await getSearchImages(searchQuery, page);
+//       this.setState({ gallery: gallery.hits });
+//       handleButtonHide(false);
+//       if (gallery.hits.length < 12) {
+//         handleButtonHide(true);
+//         handleGetError(false);
+//       }
+//       if (gallery.hits.length >= 12) handleButtonHide(false);
+//       isLoading();
+//       if (gallery.hits.length === 0) {
+//         handleGetError(true);
+//         handleButtonHide(true);
+//         return;
+//       }
+//     }
+//     if (prevProps.page < page) {
+//       isLoading();
+//       const gallery = await getSearchImages(searchQuery, page);
+//       this.setState(prevState => {
+//         return { gallery: [...prevState.gallery, ...gallery?.hits] };
+//       });
+
+//       isLoading();
+//       return;
+//     }
+//   } catch (error) {
+//     isLoading();
+//     if (error) return handleGetError();
+//   }
+// }
+
+//   render() {
+//     const { gallery } = this.state;
+//     const { getLargeImg } = this.props;
+//     return (
+//       <>
+//         <ul className={css.ImageGallery}>
+//           <ImageGalleryItem gallery={gallery} getLargeImg={getLargeImg} />
+//         </ul>
+//       </>
+//     );
+//   }
+// }
 
 ImageGallery.propTypes = {
   searchQuery: PropTypes.string.isRequired,
