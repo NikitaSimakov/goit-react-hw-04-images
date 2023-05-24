@@ -14,18 +14,22 @@ export const ImageGallery = ({
 }) => {
   const [gallery, setGallery] = useState([]);
   const [error, setError] = useState(false);
-
+  // const [load, setLoad] = useState(false);
+  // const load = useRef(false);
   useEffect(() => {
     if (searchQuery === '') return;
     try {
       getSearchImages(searchQuery, page).then(data => {
+        isLoading();
         if (page === 1) setGallery(data.hits);
         if (page > 1) setGallery(prev => [...prev, ...data.hits]);
       });
     } catch (error) {
+      console.log(error);
       setError(true);
     } finally {
-      console.log(page);
+      console.log('finally');
+      isLoading();
     }
   }, [page, searchQuery]);
 
@@ -36,8 +40,6 @@ export const ImageGallery = ({
     if (gallery.length === 12) handleButtonHide(false);
     if (gallery.length < 12) handleButtonHide(true);
   }, [gallery, handleButtonHide]);
-
-  console.log(gallery);
   return (
     <>
       <ul className={css.ImageGallery}>

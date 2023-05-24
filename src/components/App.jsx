@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useCallback, useState } from "react";
 import { Searchbar } from "./Searchbar/Searchbar";
 import { ImageGallery } from "./ImageGallery/ImageGallery";
 import { Button } from "./Button/Button";
@@ -25,7 +25,16 @@ export const App = () => {
     setLargeImg(link);
     handleShowModalToggle();
 }
-const handleLoading = () => setIsLoading(prevState=>!prevState)
+// const memoizedCallback = useCallback(
+//   () => {
+//     doSomething(a, b);
+//   },
+//   [a, b],
+// );
+// const handleLoading = () => setIsLoading(prevState=>!prevState)
+const handleLoading = useCallback(
+  () => {setIsLoading(prevState=>!prevState)}, [isLoading]
+)
   const handleGetError = (error) => setError(error)
   const handleButtonHide = (bool) => setIsHidden(bool)
         return (
