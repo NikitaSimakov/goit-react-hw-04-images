@@ -19,6 +19,7 @@ export const ImageGallery = ({
   useEffect(() => {
     if (searchQuery === '') return;
     setIsLoading(true);
+    setError(false);
     getSearchImages(searchQuery, page)
       .then(data => {
         if (page === 1) setGallery(data.hits);
@@ -27,11 +28,13 @@ export const ImageGallery = ({
       })
       .catch(error => {
         setError(error);
+        setIsLoading(false);
       });
   }, [page, searchQuery]);
 
   useEffect(() => {
     if (error) handleGetError(true);
+    if (!error) handleGetError(false);
   }, [handleGetError, error]);
 
   useEffect(() => {
